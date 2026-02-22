@@ -1,0 +1,39 @@
+<div class="row justify-content-center">
+  <div class="col-md-6">
+
+    <div class="card shadow p-4">
+      <h3 class="mb-3">Upload Song</h3>
+
+      <div class="mb-3">
+        <input class="form-control"
+               placeholder="Title"
+               [(ngModel)]="uploadTitle">
+      </div>
+
+      <div class="mb-3">
+        <input class="form-control"
+               placeholder="Genre"
+               [(ngModel)]="uploadGenre">
+      </div>
+
+      <div class="mb-3">
+        <label>Audio File</label>
+        <input type="file" class="form-control"
+               (change)="onAudioSelected($event)">
+      </div>
+
+      <div class="mb-3">
+        <label>Cover Image</label>
+        <input type="file" class="form-control"
+               (change)="onCoverSelected($event)">
+      </div>
+
+      <button class="btn btn-success w-100"
+              (click)="uploadSong()">
+        Upload
+      </button>
+
+    </div>
+
+  </div>
+</div>

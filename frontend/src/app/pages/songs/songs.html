@@ -1,0 +1,60 @@
+<h2 class="mb-3">Songs</h2>
+
+
+
+<!-- Search -->
+<div class="mb-3 d-flex">
+  <input class="form-control me-2"
+         placeholder="Search by title"
+         [(ngModel)]="keyword">
+  <button class="btn btn-primary"
+          (click)="search()">Search</button>
+</div>
+
+<!-- Songs Table -->
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+     <th>Cover</th>
+    <th>Title</th>
+    <th>Genre</th>
+    <th>Artist</th>
+    <th>Listen</th>
+    <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+<tr *ngFor="let song of songs; trackBy: trackById">
+                <td>
+                    <img 
+                    [src]="'http://localhost:8080' + song.coverImagePath"
+                    width="80"
+                    height="60"
+                    loading="lazy"
+                    class="rounded shadow-sm"
+                    />
+                </td>
+
+                <td>{{ song.title }}</td>
+                <td>{{ song.genre }}</td>
+                <td>{{ song.artist?.username }}</td>
+
+                <td>
+                    <audio controls
+                        [src]="'http://localhost:8080' + song.audioPath">
+                    </audio>
+                </td>
+
+                <td>
+                    <button 
+                    *ngIf="isArtist && currentUsername === song.artist?.username"
+                    class="btn btn-m btn-danger"
+                    (click)="deleteSong(song.id)">
+                    Delete
+                    </button>
+                </td>
+
+                </tr>
+  </tbody>
+</table>
