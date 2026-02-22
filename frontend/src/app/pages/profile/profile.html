@@ -1,1 +1,36 @@
-<p>profile works!</p>
+<div *ngIf="user" class="row justify-content-center">
+  <div class="col-md-5">
+
+    <div class="card shadow p-4 text-center">
+
+      <h3 class="mb-3">Profile</h3>
+      <p>
+
+      <img
+        *ngIf="user.profileImagePath"
+        [src]="'http://localhost:8080' + user.profileImagePath"
+        width="120"
+        height="120"
+        class="rounded-circle mb-3"
+      />
+      </p>
+
+      <p><strong>Username:</strong> {{ user.username }}</p>
+      <p><strong>Email:</strong> {{ user.email }}</p>
+      <p><strong>Role:</strong> {{ user.role }}</p>
+
+      <hr>
+
+      <input type="file"
+             class="form-control mb-3"
+             (change)="onFileSelected($event)">
+
+      <button class="btn btn-primary w-100"
+              (click)="uploadProfile()">
+        Upload Profile Image
+      </button>
+
+    </div>
+
+  </div>
+</div>

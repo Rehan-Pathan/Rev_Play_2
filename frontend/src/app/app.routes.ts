@@ -13,6 +13,10 @@ export const routes: Routes = [
   { path: 'register', component: Register },
   { path: 'songs', component: Songs },
   { path: 'playlists', component: Playlists },
-  { path: 'profile', component: Profile },
   { path: 'upload', component: Upload },
+  { 
+    path: 'profile', 
+    component: Profile
+      
+  }
 ];
