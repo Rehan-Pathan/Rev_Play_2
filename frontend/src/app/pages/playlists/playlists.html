@@ -1,1 +1,80 @@
-<p>playlists works!</p>
+<div class="container mt-4" *ngIf="isLoggedIn">
+
+  <h2>My Playlists</h2>
+
+  <div class="mb-3">
+    <input class="form-control"
+           placeholder="New Playlist Name"
+           [(ngModel)]="playlistName">
+
+    <button class="btn btn-primary mt-2"
+            (click)="createPlaylist()">
+      Create Playlist
+    </button>
+  </div>
+
+  <hr>
+
+  <ul class="list-group mb-4">
+    <li *ngFor="let p of playlists; trackBy: trackById"
+        class="list-group-item d-flex justify-content-between align-items-center">
+
+      <span (click)="selectPlaylist(p)"
+            style="cursor:pointer">
+        {{ p.name }}
+      </span>
+
+      <button class="btn btn-sm btn-danger"
+              (click)="deletePlaylist(p.id)">
+        Delete
+      </button>
+
+    </li>
+  </ul>
+
+  <div *ngIf="selectedPlaylist">
+
+    <h4>{{ selectedPlaylist.name }} Songs</h4>
+
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Cover</th>
+          <th>Title</th>
+          <th>Genre</th>
+          <th>Listen</th>
+          <th>Remove</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let ps of selectedPlaylist.songs; trackBy: trackById">
+
+          <td>
+            <img
+              [src]="'http://localhost:8080' + ps.song.coverImagePath"
+              width="60" height="40">
+          </td>
+
+          <td>{{ ps.song.title }}</td>
+          <td>{{ ps.song.genre }}</td>
+          <td>
+                <audio controls
+                    [src]="'http://localhost:8080' + ps.song.audioPath">
+                </audio>
+            </td>
+
+          <td>
+            <button class="btn btn-sm btn-danger"
+                    (click)="removeSong(ps.song.id)">
+              Remove
+            </button>
+          </td>
+
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+</div>

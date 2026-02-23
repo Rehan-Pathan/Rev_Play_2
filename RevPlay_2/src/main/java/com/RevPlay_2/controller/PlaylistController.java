@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/playlists")
@@ -35,7 +36,7 @@ public class PlaylistController {
             @PathVariable Long songId
     ) {
         playlistService.addSongToPlaylist(playlistId, songId);
-        return ResponseEntity.ok("Song added to playlist");
+        return ResponseEntity.ok(Map.of("message" ,"Song added to playlist"));
     }
 
     // ✅ Get Songs in Playlist
@@ -48,6 +49,16 @@ public class PlaylistController {
         );
     }
 
+    @GetMapping("/my")
+    public ResponseEntity<List<Playlist>> getMyPlaylists(Authentication authentication) {
+
+        String username = authentication.getName();
+
+        return ResponseEntity.ok(
+                playlistService.getUserPlaylists(username)
+        );
+    }
+
     // ✅ Remove Song from Playlist
     @DeleteMapping("/{playlistId}/remove/{songId}")
     public ResponseEntity<?> removeSong(
@@ -55,7 +66,7 @@ public class PlaylistController {
             @PathVariable Long songId
     ) {
         playlistService.removeSongFromPlaylist(playlistId, songId);
-        return ResponseEntity.ok("Song removed from playlist");
+        return ResponseEntity.ok(Map.of("message","Song removed from playlist"));
     }
 
     @DeleteMapping("/{playlistId}")
@@ -67,6 +78,6 @@ public class PlaylistController {
 
         playlistService.deletePlaylist(playlistId, username);
 
-        return ResponseEntity.ok("Playlist deleted successfully");
+        return ResponseEntity.ok(Map.of("message","Playlist deleted successfully"));
     }
 }

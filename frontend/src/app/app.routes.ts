@@ -8,7 +8,7 @@ import { Profile } from './pages/profile/profile';
 import { Upload } from './pages/upload/upload';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '', redirectTo: 'songs', pathMatch: 'full' },
   { path: 'login', component: Login },
   { path: 'register', component: Register },
   { path: 'songs', component: Songs },

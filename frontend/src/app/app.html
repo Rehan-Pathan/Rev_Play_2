@@ -28,6 +28,12 @@
         Songs
       </a>
 
+            <a class="btn btn-outline-light me-2"
+        routerLink="/playlists"
+        *ngIf="auth.isLoggedIn()">
+        Playlists
+      </a>
+
       <a class="btn btn-outline-light me-2"
          routerLink="/upload"
          *ngIf="auth.getUserRole() === 'ARTIST'">

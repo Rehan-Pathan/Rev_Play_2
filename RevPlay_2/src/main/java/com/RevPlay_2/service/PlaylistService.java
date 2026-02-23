@@ -92,4 +92,8 @@ public class PlaylistService {
 
         playlistRepository.delete(playlist);
     }
+
+    public List<Playlist> getUserPlaylists(String username) {
+        return playlistRepository.findByUserUsername(username);
+    }
 }

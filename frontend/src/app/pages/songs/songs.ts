@@ -1,8 +1,10 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Song } from '../../services/song';
 import { Auth } from '../../services/auth';
+import { Playlist } from '../../services/playlist';
 
 @Component({
   selector: 'app-songs',
@@ -14,40 +16,53 @@ import { Auth } from '../../services/auth';
 export class Songs implements OnInit {
 
   songs: any[] = [];
+  playlists: any[] = [];
+
   keyword: string = '';
 
   isArtist: boolean = false;
   currentUsername: string | null = null;
+  isLoggedIn: boolean = false;
 
-  uploadTitle: string = '';
-  uploadGenre: string = '';
-  selectedAudio: File | null = null;
-  selectedCover: File | null = null;
+  selectedPlaylist: { [key: number]: number | null } = {};
 
   constructor(
     private songService: Song,
     private auth: Auth,
+    private playlistService: Playlist,
+    private router: Router,
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-  this.isArtist = this.auth.getUserRole() === 'ARTIST';
-  this.currentUsername = this.auth.getUsername();
-  this.loadSongs();
-}
+    this.isLoggedIn = this.auth.isLoggedIn();
+    this.isArtist = this.auth.getUserRole() === 'ARTIST';
+    this.currentUsername = this.auth.getUsername();
 
-trackById(index: number, item: any) {
-  return item.id;
-}
+    this.loadSongs();
+
+    if (this.isLoggedIn) {
+      this.loadMyPlaylists();
+    }
+  }
+
+  trackById(index: number, item: any) {
+    return item.id;
+  }
 
   loadSongs() {
-    this.songService.getAll().subscribe({
-      next: (data) => {
-        this.songs = [...data];
-        this.cdr.detectChanges();
-      },
-      error: (err) => console.error(err)
+    this.songService.getAll().subscribe((data: any[]) => {
+      this.songs = [...data];
+      this.cdr.detectChanges();
     });
+  }
+
+  loadMyPlaylists() {
+    this.playlistService.getMyPlaylists()
+      .subscribe((data: any[]) => {
+        this.playlists = [...data];
+        this.cdr.detectChanges();
+      });
   }
 
   search() {
@@ -57,65 +72,41 @@ trackById(index: number, item: any) {
     }
 
     this.songService.search(this.keyword)
-      .subscribe(data => {
+      .subscribe((data: any[]) => {
         this.songs = [...data];
         this.cdr.detectChanges();
       });
   }
 
-  onAudioSelected(event: any) {
-    this.selectedAudio = event.target.files[0];
-  }
-
-  onCoverSelected(event: any) {
-    this.selectedCover = event.target.files[0];
-  }
-
   deleteSong(id: number) {
 
-  if (!confirm("Are you sure you want to delete this song?")) {
-    return;
+    if (!confirm("Are you sure you want to delete this song?")) return;
+
+    this.songService.delete(id).subscribe(() => {
+
+      this.songs = this.songs.filter(song => song.id !== id);
+
+      this.playlists.forEach(p => {
+        p.songs = p.songs.filter((ps: any) => ps.song.id !== id);
+      });
+
+      this.cdr.detectChanges();
+    });
   }
 
-  this.songService.delete(id)
-    .subscribe({
-      next: () => {
+  addToPlaylist(songId: number) {
 
-        this.songs = this.songs.filter(
-          song => Number(song.id) !== Number(id)
-        );
-        this.loadSongs();
+    const playlistId = this.selectedPlaylist[songId];
 
-      },
-      error: (err) => console.error(err)
-    });
-}
+    if (!playlistId) return;
 
+    this.playlistService.addSong(playlistId, songId)
+      .subscribe(() => {
 
-  uploadSong() {
+        this.selectedPlaylist[songId] = null;
+        alert("Song added to playlist!");
 
-    if (!this.selectedAudio || !this.selectedCover) {
-      alert("Select audio and cover file");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('title', this.uploadTitle);
-    formData.append('genre', this.uploadGenre);
-    formData.append('audio', this.selectedAudio);
-    formData.append('cover', this.selectedCover);
-
-    this.songService.upload(formData)
-      .subscribe({
-        next: () => {
-          alert("Song Uploaded Successfully");
-          this.uploadTitle = '';
-          this.uploadGenre = '';
-          this.selectedAudio = null;
-          this.selectedCover = null;
-          this.loadSongs();
-        },
-        error: (err) => console.error(err)
+       
       });
   }
 }

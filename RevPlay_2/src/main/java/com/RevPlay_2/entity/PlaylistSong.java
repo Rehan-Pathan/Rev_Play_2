@@ -1,6 +1,7 @@
 package com.RevPlay_2.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,6 +19,7 @@ public class PlaylistSong {
 
     @ManyToOne
     @JoinColumn(name = "playlist_id")
+    @JsonIgnore
     private Playlist playlist;
 
     @ManyToOne

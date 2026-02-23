@@ -1,8 +1,5 @@
 <h2 class="mb-3">Songs</h2>
 
-
-
-<!-- Search -->
 <div class="mb-3 d-flex">
   <input class="form-control me-2"
          placeholder="Search by title"
@@ -11,50 +8,68 @@
           (click)="search()">Search</button>
 </div>
 
-<!-- Songs Table -->
 <table class="table table-bordered table-striped">
+
   <thead>
     <tr>
-     <th>Cover</th>
-    <th>Title</th>
-    <th>Genre</th>
-    <th>Artist</th>
-    <th>Listen</th>
-    <th></th>
+      <th>Cover</th>
+      <th>Title</th>
+      <th>Genre</th>
+      <th>Artist</th>
+      <th>Listen</th>
+      <th *ngIf="isLoggedIn">Add to Playlist</th>
+      <th *ngIf="isArtist">Delete</th>
     </tr>
   </thead>
 
   <tbody>
-<tr *ngFor="let song of songs; trackBy: trackById">
-                <td>
-                    <img 
-                    [src]="'http://localhost:8080' + song.coverImagePath"
-                    width="80"
-                    height="60"
-                    loading="lazy"
-                    class="rounded shadow-sm"
-                    />
-                </td>
+    <tr *ngFor="let song of songs; trackBy: trackById">
 
-                <td>{{ song.title }}</td>
-                <td>{{ song.genre }}</td>
-                <td>{{ song.artist?.username }}</td>
+      <td>
+        <img
+          [src]="'http://localhost:8080' + song.coverImagePath"
+          width="80"
+          height="60"
+          class="rounded shadow-sm"
+          loading="lazy"
+        />
+      </td>
 
-                <td>
-                    <audio controls
-                        [src]="'http://localhost:8080' + song.audioPath">
-                    </audio>
-                </td>
+      <td>{{ song.title }}</td>
+      <td>{{ song.genre }}</td>
+      <td>{{ song.artist?.username }}</td>
 
-                <td>
-                    <button 
-                    *ngIf="isArtist && currentUsername === song.artist?.username"
-                    class="btn btn-m btn-danger"
-                    (click)="deleteSong(song.id)">
-                    Delete
-                    </button>
-                </td>
+      <td>
+        <audio controls
+               [src]="'http://localhost:8080' + song.audioPath">
+        </audio>
+      </td>
 
-                </tr>
+          <td *ngIf="isLoggedIn">
+          <select class="form-select form-select-sm"
+                  [(ngModel)]="selectedPlaylist[song.id]">
+            <option [ngValue]="null">Select Playlist</option>
+            <option *ngFor="let p of playlists"
+                    [ngValue]="p.id">
+              {{ p.name }}
+            </option>
+          </select>
+
+          <button class="btn btn-sm btn-secondary mt-1"
+                  (click)="addToPlaylist(song.id)">
+            Add
+          </button>
+        </td>
+
+      <!-- Delete -->
+      <td *ngIf="isArtist && currentUsername === song.artist?.username">
+        <button class="btn btn-sm btn-danger"
+                (click)="deleteSong(song.id)">
+          Delete
+        </button>
+      </td>
+
+    </tr>
   </tbody>
+
 </table>
