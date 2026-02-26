@@ -61,4 +61,9 @@ public class SongController {
         songService.deleteSong(id, username);
         return ResponseEntity.ok(Map.of("message","Song deleted successfully"));
     }
+
+    @GetMapping("/trending")
+    public ResponseEntity<List<Song>> trending() {
+        return ResponseEntity.ok(songService.getTrendingSongs());
+    }
 }

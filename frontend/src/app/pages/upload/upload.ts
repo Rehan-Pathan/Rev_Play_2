@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -19,16 +19,31 @@ export class Upload {
   selectedAudio: File | null = null;
   selectedCover: File | null = null;
 
+  message: string | null = null;
+  isSuccess = true;
+
   constructor(
     private songService: Song,
     private auth: Auth,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
     if (this.auth.getUserRole() !== 'ARTIST') {
       this.router.navigate(['/songs']);
     }
+  }
+
+  showMessage(msg: string, success: boolean) {
+    this.message = msg;
+    this.isSuccess = success;
+    this.cdr.detectChanges();
+
+    setTimeout(() => {
+      this.message = null;
+      this.cdr.detectChanges();
+    }, 2500);
   }
 
   onAudioSelected(event: any) {
@@ -42,7 +57,7 @@ export class Upload {
   uploadSong() {
 
     if (!this.selectedAudio || !this.selectedCover) {
-      alert("Select audio and cover file");
+      this.showMessage("Select audio and cover file", false);
       return;
     }
 
@@ -55,10 +70,17 @@ export class Upload {
     this.songService.upload(formData)
       .subscribe({
         next: () => {
-          alert("Song Uploaded Successfully");
-          this.router.navigate(['/songs']);
+
+          this.showMessage("Song Uploaded Successfully", true);
+
+          setTimeout(() => {
+            this.router.navigate(['/songs']);
+          }, 1200);
+
         },
-        error: (err) => console.error(err)
+        error: () => {
+          this.showMessage("Upload failed. Try again.", false);
+        }
       });
   }
 }

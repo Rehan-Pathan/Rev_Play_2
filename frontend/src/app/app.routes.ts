@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-
+import { Trending } from './pages/trending/trending';
 import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
 import { Songs } from './pages/songs/songs';
@@ -18,5 +18,9 @@ export const routes: Routes = [
     path: 'profile', 
     component: Profile
       
+  },
+  {
+    path: 'trending',
+    component: Trending
   }
 ];

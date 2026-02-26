@@ -1,59 +1,67 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow px-4 py-3">
 
-  <a class="navbar-brand" routerLink="/songs">RevPlay</a>
+  <div class="container-fluid">
+    
 
-  <div class="ms-auto">
+    <a class="navbar-brand fw-bold fs-4" routerLink="/songs">
+      RevPlay
+    </a>
 
-    <!-- Not Logged In -->
-    <ng-container *ngIf="!auth.isLoggedIn(); else loggedInLinks">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-      <a class="btn btn-outline-light me-2" routerLink="/songs">
-        Songs
-      </a>
+    <div class="collapse navbar-collapse" id="navbarContent">
+      <div class="ms-auto d-flex align-items-center">
 
-      <a class="btn btn-outline-light me-2" routerLink="/login">
-        Login
-      </a>
+        <ng-container *ngIf="!auth.isLoggedIn(); else loggedInLinks">
 
-      <a class="btn btn-outline-light me-2" routerLink="/register">
-        Register
-      </a>
+          <a class="nav-link text-light px-3"
+   routerLink="/trending">
+  Trending
+</a>
 
-    </ng-container>
+          <a class="nav-link text-light px-3" routerLink="/songs">Songs</a>
+          <a class="nav-link text-light px-3" routerLink="/login">Login</a>
+          <a class="btn btn-outline-light ms-3" routerLink="/register">Register</a>
 
-    <!-- Logged In -->
-    <ng-template #loggedInLinks>
+        </ng-container>
 
-      <a class="btn btn-outline-light me-2" routerLink="/songs">
-        Songs
-      </a>
+        <ng-template #loggedInLinks>
+          <a class="nav-link text-light px-3"
+   routerLink="/trending">
+  Trending
+</a>
 
-            <a class="btn btn-outline-light me-2"
-        routerLink="/playlists"
-        *ngIf="auth.isLoggedIn()">
-        Playlists
-      </a>
+          <a class="nav-link text-light px-3" routerLink="/songs">Songs</a>
 
-      <a class="btn btn-outline-light me-2"
-         routerLink="/upload"
-         *ngIf="auth.getUserRole() === 'ARTIST'">
-        Upload
-      </a>
+          <a class="nav-link text-light px-3"
+             routerLink="/playlists"
+             *ngIf="auth.isLoggedIn()">
+            Playlists
+          </a>
 
-      <a class="btn btn-outline-light me-2" routerLink="/profile">
-        Profile
-      </a>
+          <a class="nav-link text-light px-3"
+             routerLink="/upload"
+             *ngIf="auth.getUserRole() === 'ARTIST'">
+            Upload
+          </a>
 
-      <button class="btn btn-danger"
-              (click)="logout()">
-        Logout
-      </button>
+          <a class="nav-link text-light px-3" routerLink="/profile">Profile</a>
 
-    </ng-template>
+          <button class="btn btn-danger ms-3"
+                  (click)="logout()">
+            Logout
+          </button>
 
+        </ng-template>
+
+      </div>
+    </div>
   </div>
 </nav>
 
-<div class="container mt-4">
+<div class="container-fluid py-4">
   <router-outlet></router-outlet>
 </div>

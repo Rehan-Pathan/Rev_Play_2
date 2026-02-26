@@ -17,7 +17,6 @@ export class Songs implements OnInit {
 
   songs: any[] = [];
   playlists: any[] = [];
-
   keyword: string = '';
 
   isArtist: boolean = false;
@@ -25,6 +24,10 @@ export class Songs implements OnInit {
   isLoggedIn: boolean = false;
 
   selectedPlaylist: { [key: number]: number | null } = {};
+  private playSessionMap = new Map<number, boolean>();
+
+  message: string | null = null;
+  isSuccess = true;
 
   constructor(
     private songService: Song,
@@ -44,6 +47,45 @@ export class Songs implements OnInit {
     if (this.isLoggedIn) {
       this.loadMyPlaylists();
     }
+  }
+
+  showMessage(msg: string, success: boolean) {
+    this.message = msg;
+    this.isSuccess = success;
+    this.cdr.detectChanges();
+
+    setTimeout(() => {
+      this.message = null;
+      this.cdr.detectChanges();
+    }, 2500);
+  }
+
+  handlePlay(songId: number, audio: HTMLAudioElement) {
+
+    if (this.playSessionMap.get(songId)) return;
+
+    setTimeout(() => {
+
+      if (!audio.paused && audio.currentTime >= 5) {
+
+        this.songService.incrementPlayCount(songId).subscribe({
+          next: () => {
+            const song = this.songs.find(s => s.id === songId);
+            if (song) {
+              song.playCount++;
+              this.cdr.detectChanges();
+            }
+          }
+        });
+
+        this.playSessionMap.set(songId, true);
+      }
+
+    }, 5000);
+  }
+
+  resetPlaySession(songId: number) {
+    this.playSessionMap.set(songId, false);
   }
 
   trackById(index: number, item: any) {
@@ -80,17 +122,20 @@ export class Songs implements OnInit {
 
   deleteSong(id: number) {
 
-    if (!confirm("Are you sure you want to delete this song?")) return;
+    this.songService.delete(id).subscribe({
+      next: () => {
 
-    this.songService.delete(id).subscribe(() => {
+        this.songs = this.songs.filter(song => song.id !== id);
 
-      this.songs = this.songs.filter(song => song.id !== id);
+        this.playlists.forEach(p => {
+          p.songs = p.songs.filter((ps: any) => ps.song.id !== id);
+        });
 
-      this.playlists.forEach(p => {
-        p.songs = p.songs.filter((ps: any) => ps.song.id !== id);
-      });
-
-      this.cdr.detectChanges();
+        this.showMessage("Song deleted successfully", true);
+      },
+      error: () => {
+        this.showMessage("Failed to delete song", false);
+      }
     });
   }
 
@@ -98,15 +143,22 @@ export class Songs implements OnInit {
 
     const playlistId = this.selectedPlaylist[songId];
 
-    if (!playlistId) return;
+    if (!playlistId) {
+      this.showMessage("Select a playlist first", false);
+      return;
+    }
 
     this.playlistService.addSong(playlistId, songId)
-      .subscribe(() => {
-
-        this.selectedPlaylist[songId] = null;
-        alert("Song added to playlist!");
-
-       
+      .subscribe({
+        next: () => {
+          this.selectedPlaylist[songId] = null;
+          this.showMessage("Song added to playlist!", true);
+        },
+        error: () => {
+          this.showMessage("Failed to add song", false);
+        }
       });
   }
+
+  
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -15,10 +15,14 @@ export class Register {
 
   registerForm;
 
+  message: string | null = null;
+  isSuccess = true;
+
   constructor(
     private fb: FormBuilder,
     private auth: Auth,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {
     this.registerForm = this.fb.group({
       username: [''],
@@ -28,17 +32,33 @@ export class Register {
     });
   }
 
+  showMessage(msg: string, success: boolean) {
+    this.message = msg;
+    this.isSuccess = success;
+    this.cdr.detectChanges();
+
+    setTimeout(() => {
+      this.message = null;
+      this.cdr.detectChanges();
+    }, 3000);
+  }
+
   onSubmit() {
     this.auth.register(this.registerForm.value)
       .subscribe({
-        next: (response) => {
-          console.log('Registered:', response);
-          alert('User Registered Successfully');
-          this.router.navigate(['/login']);
+        next: () => {
+
+          this.showMessage('User Registered Successfully! Redirecting...', true);
+
+          setTimeout(() => {
+            this.router.navigate(['/login']);
+          }, 1200);
+
         },
-        error: (error) => {
-          console.error('Registration error:', error);
-          alert('Registration Failed');
+        error: () => {
+
+          this.showMessage('Registration Failed. Please try again.', false);
+
         }
       });
   }

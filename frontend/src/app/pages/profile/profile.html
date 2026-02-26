@@ -1,34 +1,57 @@
-<div *ngIf="user" class="row justify-content-center">
-  <div class="col-md-5">
+<div *ngIf="user" class="container-fluid min-vh-100 d-flex align-items-center justify-content-center">
 
-    <div class="card shadow p-4 text-center">
+  <div class="col-11 col-sm-8 col-md-6 col-lg-4">
 
-      <h3 class="mb-3">Profile</h3>
-      <p>
+    <div class="card bg-dark text-light shadow-lg border border-secondary">
 
-      <img
-        *ngIf="user.profileImagePath"
-        [src]="'http://localhost:8080' + user.profileImagePath"
-        width="120"
-        height="120"
-        class="rounded-circle mb-3"
-      />
-      </p>
+      <div class="card-body p-4 text-center">
 
-      <p><strong>Username:</strong> {{ user.username }}</p>
-      <p><strong>Email:</strong> {{ user.email }}</p>
-      <p><strong>Role:</strong> {{ user.role }}</p>
+        <h3 class="mb-4 fw-bold">Profile</h3>
 
-      <hr>
+        <!-- Notification Box -->
+        <div *ngIf="message"
+             class="p-2 mb-3 text-center rounded"
+             [ngClass]="isSuccess ? 'bg-success text-white' : 'bg-danger text-white'">
+          {{ message }}
+        </div>
 
-      <input type="file"
-             class="form-control mb-3"
-             (change)="onFileSelected($event)">
+        <div class="mb-3">
+          <img
+            *ngIf="user.profileImagePath"
+            [src]="'http://localhost:8080' + user.profileImagePath"
+            width="130"
+            height="130"
+            class="rounded-circle shadow"
+            style="object-fit: cover;"
+          />
+        </div>
 
-      <button class="btn btn-primary w-100"
-              (click)="uploadProfile()">
-        Upload Profile Image
-      </button>
+        <ul class="list-group list-group-flush text-start mb-4">
+          <li class="list-group-item bg-dark text-light border-secondary">
+            <strong>Username:</strong> {{ user.username }}
+          </li>
+          <li class="list-group-item bg-dark text-light border-secondary">
+            <strong>Email:</strong> {{ user.email }}
+          </li>
+          <li class="list-group-item bg-dark text-light border-secondary">
+            <strong>Role:</strong> {{ user.role }}
+          </li>
+        </ul>
+
+        <hr class="border-secondary">
+
+        <input type="file"
+               class="form-control bg-black text-light border-secondary mb-3"
+               (change)="onFileSelected($event)">
+
+        <div class="d-grid">
+          <button class="btn btn-secondary"
+                  (click)="uploadProfile()">
+            Upload Profile Image
+          </button>
+        </div>
+
+      </div>
 
     </div>
 

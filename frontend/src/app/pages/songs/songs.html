@@ -1,75 +1,92 @@
-<h2 class="mb-3">Songs</h2>
+<h2 class="mb-4 fw-bold text-center">Songs</h2>
 
-<div class="mb-3 d-flex">
-  <input class="form-control me-2"
-         placeholder="Search by title"
-         [(ngModel)]="keyword">
-  <button class="btn btn-primary"
-          (click)="search()">Search</button>
+<!-- Notification -->
+<div *ngIf="message"
+     class="p-2 mb-3 text-center rounded col-md-6 mx-auto"
+     [ngClass]="isSuccess ? 'bg-success text-white' : 'bg-danger text-white'">
+  {{ message }}
 </div>
 
-<table class="table table-bordered table-striped">
+<div class="mb-4 d-flex justify-content-center">
+  <div class="col-md-6 d-flex">
+    <input class="form-control me-2 bg-dark text-light border-secondary"
+           placeholder="Search by title"
+           [(ngModel)]="keyword">
 
-  <thead>
-    <tr>
-      <th>Cover</th>
-      <th>Title</th>
-      <th>Genre</th>
-      <th>Artist</th>
-      <th>Listen</th>
-      <th *ngIf="isLoggedIn">Add to Playlist</th>
-      <th *ngIf="isArtist">Delete</th>
-    </tr>
-  </thead>
+    <button class="btn btn-secondary"
+            (click)="search()">
+      Search
+    </button>
+  </div>
+</div>
 
-  <tbody>
-    <tr *ngFor="let song of songs; trackBy: trackById">
+<!-- Horizontal Scroll Container -->
+<div class="col-md-10 mx-auto">
 
-      <td>
-        <img
-          [src]="'http://localhost:8080' + song.coverImagePath"
-          width="80"
-          height="60"
-          class="rounded shadow-sm"
-          loading="lazy"
-        />
-      </td>
+  <div class="song-row"
+       *ngFor="let song of songs; trackBy: trackById">
 
-      <td>{{ song.title }}</td>
-      <td>{{ song.genre }}</td>
-      <td>{{ song.artist?.username }}</td>
+    <!-- Cover -->
+    <img [src]="'http://localhost:8080' + song.coverImagePath"
+         class="song-cover">
 
-      <td>
-        <audio controls
-               [src]="'http://localhost:8080' + song.audioPath">
-        </audio>
-      </td>
+    <!-- Song Info -->
+    <div class="song-info">
 
-          <td *ngIf="isLoggedIn">
-          <select class="form-select form-select-sm"
-                  [(ngModel)]="selectedPlaylist[song.id]">
-            <option [ngValue]="null">Select Playlist</option>
-            <option *ngFor="let p of playlists"
-                    [ngValue]="p.id">
-              {{ p.name }}
-            </option>
-          </select>
+      <div class="song-title">
+        {{ song.title }}
+      </div>
 
-          <button class="btn btn-sm btn-secondary mt-1"
-                  (click)="addToPlaylist(song.id)">
-            Add
-          </button>
-        </td>
+      <div class="song-artist">
+        {{ song.artist?.username }}
+      </div>
 
-      <!-- Delete -->
-      <td *ngIf="isArtist && currentUsername === song.artist?.username">
-        <button class="btn btn-sm btn-danger"
-                (click)="deleteSong(song.id)">
-          Delete
-        </button>
-      </td>
+      <span class="badge bg-secondary mt-1">
+        {{ song.genre }}
+      </span>
 
-    </tr>
-  </tbody>
+    </div>
 
-</table>
+    <!-- Audio -->
+    <div class="song-audio">
+      <audio controls
+             #audioPlayer
+             (play)="handlePlay(song.id, audioPlayer)"
+             (ended)="resetPlaySession(song.id)"
+             [src]="'http://localhost:8080' + song.audioPath">
+      </audio>
+    </div>
+
+    <!-- Playlist -->
+    <div *ngIf="isLoggedIn" class="song-actions">
+
+      <select class="form-select form-select-sm dark-select mb-1"
+              [(ngModel)]="selectedPlaylist[song.id]">
+        <option [ngValue]="null">Playlist</option>
+        <option *ngFor="let p of playlists"
+                [ngValue]="p.id">
+          {{ p.name }}
+        </option>
+      </select>
+
+      <button class="btn btn-sm btn-outline-light w-100"
+              (click)="addToPlaylist(song.id)">
+        Add
+      </button>
+
+    </div>
+
+    <!-- Delete -->
+    <div *ngIf="isArtist && currentUsername === song.artist?.username"
+         class="song-delete">
+
+      <button class="btn btn-sm btn-danger"
+              (click)="deleteSong(song.id)">
+        Delete
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

@@ -15,6 +15,9 @@ export class Profile implements OnInit {
   user: any = null;
   selectedFile: File | null = null;
 
+  message: string | null = null;
+  isSuccess = true;
+
   constructor(
     private userService: User,
     private cdr: ChangeDetectorRef
@@ -24,16 +27,27 @@ export class Profile implements OnInit {
     this.loadProfile();
   }
 
+  showMessage(msg: string, success: boolean) {
+    this.message = msg;
+    this.isSuccess = success;
+    this.cdr.detectChanges();
+
+    setTimeout(() => {
+      this.message = null;
+      this.cdr.detectChanges();
+    }, 2500);
+  }
+
   loadProfile() {
     this.userService.getMe()
       .subscribe({
         next: (data) => {
           this.user = data;
-
-          // 🔥 force Angular to render immediately
           this.cdr.detectChanges();
         },
-        error: (err) => console.error(err)
+        error: () => {
+          this.showMessage('Failed to load profile', false);
+        }
       });
   }
 
@@ -44,7 +58,7 @@ export class Profile implements OnInit {
   uploadProfile() {
 
     if (!this.selectedFile) {
-      alert("Select image");
+      this.showMessage("Please select an image first", false);
       return;
     }
 
@@ -54,9 +68,12 @@ export class Profile implements OnInit {
     this.userService.uploadProfile(formData)
       .subscribe({
         next: () => {
-          this.loadProfile();  // reload data
+          this.showMessage('Profile image updated successfully', true);
+          this.loadProfile();
         },
-        error: (err) => console.error(err)
+        error: () => {
+          this.showMessage('Upload failed', false);
+        }
       });
   }
 }

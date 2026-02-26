@@ -1,0 +1,72 @@
+<h2 class="mb-4 fw-bold text-center">🔥 Trending Songs</h2>
+
+<div class="col-md-9 mx-auto">
+
+  <div class="card bg-dark border-0 shadow-lg p-3">
+
+    <table class="table table-dark table-hover align-middle mb-0">
+
+      <thead>
+        <tr>
+          <th style="width:90px;">Cover</th>
+          <th>Title</th>
+          <th>Artist</th>
+          <th>Genre</th>
+          <th style="min-width:220px;">Listen</th>
+          <th>Plays</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <tr *ngFor="let song of songs">
+
+          <td>
+            <img
+              [src]="'http://localhost:8080' + song.coverImagePath"
+              width="70"
+              height="50"
+              class="rounded shadow-sm"
+              loading="lazy"
+            />
+          </td>
+
+          <td class="fw-semibold">
+            {{ song.title }}
+          </td>
+
+          <td>
+            {{ song.artist?.username }}
+          </td>
+
+          <td>
+            <span class="badge bg-secondary">
+              {{ song.genre }}
+            </span>
+          </td>
+
+          <td>
+            <audio controls
+                   class="w-100"
+                   #audioPlayer
+                   (play)="handlePlay(song.id, audioPlayer)"
+                   (ended)="resetPlaySession(song.id)"
+                   [src]="'http://localhost:8080' + song.audioPath">
+            </audio>
+          </td>
+
+          <td>
+            <span class="badge bg-secondary">
+              {{ song.playCount }}
+            </span>
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>

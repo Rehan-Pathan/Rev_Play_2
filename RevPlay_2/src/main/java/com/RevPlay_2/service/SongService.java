@@ -6,6 +6,7 @@ import com.RevPlay_2.entity.User;
 import com.RevPlay_2.repository.SongRepository;
 import com.RevPlay_2.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -70,5 +71,9 @@ public class SongService {
         }
 
         songRepository.delete(song);
+    }
+
+    public List<Song> getTrendingSongs() {
+        return songRepository.findAllByOrderByPlayCountDesc(PageRequest.of(0, 10));
     }
 }

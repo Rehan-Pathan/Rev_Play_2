@@ -16,8 +16,10 @@ export class Playlists implements OnInit {
   playlistName: string = '';
   playlists: any[] = [];
   selectedPlaylist: any = null;
-
   isLoggedIn: boolean = false;
+
+  message: string | null = null;
+  isSuccess = true;
 
   constructor(
     private playlistService: Playlist,
@@ -33,6 +35,17 @@ export class Playlists implements OnInit {
     }
   }
 
+  showMessage(msg: string, success: boolean) {
+    this.message = msg;
+    this.isSuccess = success;
+    this.cdr.detectChanges();
+
+    setTimeout(() => {
+      this.message = null;
+      this.cdr.detectChanges();
+    }, 2500);
+  }
+
   loadMyPlaylists() {
     this.playlistService.getMyPlaylists()
       .subscribe((data: any[]) => {
@@ -43,13 +56,21 @@ export class Playlists implements OnInit {
 
   createPlaylist() {
 
-    if (!this.playlistName.trim()) return;
+    if (!this.playlistName.trim()) {
+      this.showMessage("Enter playlist name", false);
+      return;
+    }
 
     this.playlistService.create(this.playlistName)
-      .subscribe(() => {
-
-        this.playlistName = '';
-        this.loadMyPlaylists();
+      .subscribe({
+        next: () => {
+          this.playlistName = '';
+          this.loadMyPlaylists();
+          this.showMessage("Playlist created", true);
+        },
+        error: () => {
+          this.showMessage("Failed to create playlist", false);
+        }
       });
   }
 
@@ -64,29 +85,38 @@ export class Playlists implements OnInit {
 
     this.playlistService
       .removeSong(this.selectedPlaylist.id, songId)
-      .subscribe(() => {
+      .subscribe({
+        next: () => {
+          this.selectedPlaylist.songs =
+            this.selectedPlaylist.songs
+              .filter((ps: any) => ps.song.id !== songId);
 
-        this.selectedPlaylist.songs =
-          this.selectedPlaylist.songs
-            .filter((ps: any) => ps.song.id !== songId);
-
-        this.cdr.detectChanges();
+          this.showMessage("Song removed", true);
+        },
+        error: () => {
+          this.showMessage("Failed to remove song", false);
+        }
       });
   }
 
   deletePlaylist(id: number) {
 
     this.playlistService.deletePlaylist(id)
-      .subscribe(() => {
+      .subscribe({
+        next: () => {
 
-        this.playlists =
-          this.playlists.filter(p => p.id !== id);
+          this.playlists =
+            this.playlists.filter(p => p.id !== id);
 
-        if (this.selectedPlaylist?.id === id) {
-          this.selectedPlaylist = null;
+          if (this.selectedPlaylist?.id === id) {
+            this.selectedPlaylist = null;
+          }
+
+          this.showMessage("Playlist deleted", true);
+        },
+        error: () => {
+          this.showMessage("Failed to delete playlist", false);
         }
-
-        this.cdr.detectChanges();
       });
   }
 
