@@ -1,8 +1,8 @@
 # 🎵 RevPlay - Music Streaming Platform
 
-RevPlay is a **full-stack music streaming application** where **artists upload songs** and **users listen, search, and organize music through playlists**.
+RevPlay is a full-stack music streaming application where artists upload songs and users listen, search, and organize music through playlists.
 
-The project demonstrates **REST API development with Spring Boot** and a **Single Page Application (SPA) frontend using Angular**.
+The project demonstrates REST API development with Spring Boot and a Single Page Application (SPA) frontend using Angular.
 
 ---
 
@@ -35,39 +35,38 @@ The project demonstrates **REST API development with Spring Boot** and a **Singl
 
 # 🏗 System Architecture
 
-
+```
 Angular Frontend (SPA)
-│
-│ HTTP REST APIs
-▼
+        │
+        │ HTTP REST APIs
+        ▼
 Spring Boot Backend
-│
-│ JPA / Hibernate
-▼
+        │
+        │ JPA / Hibernate
+        ▼
 MySQL Database
-│
-▼
+        │
+        ▼
 File Storage (uploads folder)
-
+```
 
 ---
 
 # 🗄 Database Design
-
-
 
 ## User
 Represents both artists and listeners.
 
 Fields:
 
+```
 id
 username
 email
 password
 role (USER / ARTIST)
 profileImagePath
-
+```
 
 ---
 
@@ -76,6 +75,7 @@ Represents music uploaded by artists.
 
 Fields:
 
+```
 id
 title
 genre
@@ -83,7 +83,7 @@ audioPath
 coverImagePath
 playCount
 artist_id
-
+```
 
 ---
 
@@ -92,10 +92,11 @@ Represents a collection of songs created by users.
 
 Fields:
 
+```
 id
 name
 user_id
-
+```
 
 ---
 
@@ -104,10 +105,11 @@ Join table connecting playlists and songs.
 
 Fields:
 
+```
 id
 playlist_id
 song_id
-
+```
 
 ---
 
@@ -122,6 +124,7 @@ song_id
 ---
 
 ## 🎤 Artist Features
+
 Artists can:
 
 - Upload songs
@@ -132,6 +135,7 @@ Artists can:
 ---
 
 ## 🎧 User Features
+
 Users can:
 
 - Browse songs
@@ -145,6 +149,7 @@ Users can:
 ---
 
 ## 👤 Profile Features
+
 Users can:
 
 - Upload profile images
@@ -157,65 +162,65 @@ Users can:
 
 ## Authentication
 
-
+```
 POST /auth/register
 POST /auth/login
-
+```
 
 ---
 
 ## User
 
-
+```
 GET /users/me
 POST /users/upload-profile
-
+```
 
 ---
 
 ## Songs
 
-
+```
 GET /songs
 GET /songs/search
 POST /songs/upload
 POST /songs/play/{id}
 DELETE /songs/{id}
-
+```
 
 ---
 
 ## Playlists
 
-
+```
 POST /playlists/create
 GET /playlists/{playlistId}
 POST /playlists/{playlistId}/add/{songId}
 DELETE /playlists/{playlistId}/remove/{songId}
 DELETE /playlists/{playlistId}
-
+```
 
 ---
 
 # 🖥 Frontend Pages
 
-The Angular frontend includes the following pages:
+The Angular frontend includes the following pages.
 
-### Authentication
+## Authentication
 - Login
 - Register
 
-### Music
+## Music
 - Songs page
 - Song search
 - Audio player
 
-### Playlists
+## Playlists
 - Create playlist
 - View playlist songs
 - Add/remove songs
 
-### Profile
+## Profile
 - Upload profile image
 - View profile details
 
@@ -228,29 +233,48 @@ The Angular frontend includes the following pages:
 Navigate to the backend folder and run:
 
 
+
 Backend runs at:
 
+```
 http://localhost:8080
+```
 
 Swagger API documentation:
 
+```
 http://localhost:8080/swagger-ui.html
-2️⃣ Frontend Setup
+```
+
+---
+
+## 2️⃣ Frontend Setup
 
 Navigate to the frontend folder.
 
 Install dependencies:
 
+```
 npm install
+```
 
 Run Angular:
 
+```
 ng serve
+```
 
 Frontend runs at:
 
+```
 http://localhost:4200
-📂 Project Structure
+```
+
+---
+
+# 📂 Project Structure
+
+```
 RevPlay
 │
 ├── RevPlay_2 (Backend)
@@ -268,51 +292,43 @@ RevPlay
 │   └── routing
 │
 └── uploads
+```
 
-⚠️ Challenges Faced
+---
 
-Handling JWT authentication in Angular
+# ⚠️ Challenges Faced
 
-Managing file uploads (audio and images)
+- Handling JWT authentication in Angular
+- Managing file uploads (audio and images)
+- Resolving CORS issues between Angular and Spring Boot
+- Handling JSON parsing errors in Angular when backend returned plain text
+- Managing database relationships for playlists and songs
+- Updating Angular UI using Change Detection
 
-Resolving CORS issues between Angular and Spring Boot
+---
 
-Handling JSON parsing errors in Angular when backend returned plain text
-
-Managing database relationships for playlists and songs
-
-Updating Angular UI using Change Detection
-
-📚 Key Learnings
+# 📚 Key Learnings
 
 This project strengthened understanding of:
 
-Full-stack application architecture
+- Full-stack application architecture
+- REST API design
+- Spring Security with JWT
+- Angular services and HTTP client
+- Database relationships using JPA
+- File upload handling
+- SPA routing and state updates
 
-REST API design
+---
 
-Spring Security with JWT
-
-Angular services and HTTP client
-
-Database relationships using JPA
-
-File upload handling
-
-SPA routing and state updates
-
-🏁 Conclusion
+# 🏁 Conclusion
 
 RevPlay demonstrates a complete music streaming platform prototype built using modern web technologies.
 
 The system integrates secure authentication, REST APIs, file uploads, database relationships, and a responsive Angular interface to allow artists to upload music and users to listen and manage playlists.
 
-👨‍💻 Author
-
-Rehan Pathan
-
 ---
 
+# 👨‍💻 Author
 
-
-
+Rehan Pathan
