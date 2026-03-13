@@ -208,7 +208,7 @@ The Angular frontend includes the following pages.
 
 ## Authentication
 - Login
-- Register
+- Register user
 
 ## Music
 - Songs page
