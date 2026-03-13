@@ -8,7 +8,7 @@ public class RevPlay2Application {
 
 	public static void main(String[] args) {
 		SpringApplication.run(RevPlay2Application.class, args);
-		System.out.println("RevPlay2Application started");
+		System.out.println("RevPlay2Application started now");
 	}
 
 }
